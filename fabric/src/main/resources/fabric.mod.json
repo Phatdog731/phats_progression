@@ -3,23 +3,22 @@
   "id": "phats_progression",
   "version": "${version}",
   "name": "Phat's Progression Framework",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "A modpack-configurable mining tier progression system that extends the vanilla tier system past netherite. Define which blocks require which tools entirely through config.",
   "authors": [
     "Phatdog731"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/Phatdog731/phats_progression"
   },
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/phats_progression/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.phatdog.phatsprogression.fabric.ExampleModFabric"
+      "com.phatdog.phatsprogression.fabric.PhatsProgressionFabric"
     ],
     "client": [
-      "com.phatdog.phatsprogression.fabric.client.ExampleModFabricClient"
+      "com.phatdog.phatsprogression.fabric.client.PhatsProgressionFabricClient"
     ]
   },
   "mixins": [
@@ -31,8 +30,5 @@
     "java": ">=21",
     "architectury": ">=13.0.8",
     "fabric-api": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }

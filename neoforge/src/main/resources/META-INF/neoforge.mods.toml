@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
-#issueTrackerURL = ""
-license = "Insert License Here"
+issueTrackerURL = "https://github.com/Phatdog731/phats_progression/issues"
+license = "MIT"
 
 [[mods]]
 modId = "phats_progression"
@@ -9,9 +9,8 @@ version = "${version}"
 displayName = "Phat's Progression Framework"
 authors = "Phatdog731"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+A modpack-configurable mining tier progression system that extends the vanilla tier system past netherite. Define which blocks require which tools entirely through config.
 '''
-#logoFile = ""
 
 [[dependencies.phats_progression]]
 modId = "neoforge"
