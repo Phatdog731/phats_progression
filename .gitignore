@@ -1,0 +1,40 @@
+# Gradle
+.gradle/
+build/
+*/build/
+!src/**/build
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# VS Code
+.vscode/
+.vscode-test/
+
+# Minecraft / mod dev
+run/
+*/run/
+logs/
+*/logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / local config
+*.env
+local.properties

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "phats_progression",
+  "version": "${version}",
+  "name": "Phat's Progression Framework",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Phatdog731"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/phats_progression/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.phatdog.phatsprogression.fabric.ExampleModFabric"
+    ],
+    "client": [
+      "com.phatdog.phatsprogression.fabric.client.ExampleModFabricClient"
+    ]
+  },
+  "mixins": [
+    "phats_progression.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "architectury": ">=13.0.8",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
