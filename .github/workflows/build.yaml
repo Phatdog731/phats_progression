@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+      - '1.21.*'
+  pull_request:
+    branches:
+      - main
+      - '1.21.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Build
+        run: ./gradlew build --no-daemon
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mod-jars-${{ github.ref_name }}
+          path: |
+            fabric/build/libs/*.jar
+            neoforge/build/libs/*.jar
+          if-no-files-found: warn
+          retention-days: 14
