@@ -149,7 +149,7 @@ public final class TierConfig {
 
     private static final String DEFAULT_TOOL_CONFIG = """
             {
-              "_comment": "Tool tier assignments. Tools can mine blocks at or below their tier. Matches merged: ID/glob, tag, keyword (substring of ID path) — if all specified fields match, the tool is assigned to that tier. Highest matching tier wins.",
+              "_comment": "Tool tier assignments. Tools can mine blocks at or below their tier. Default progression: 1=wood, 2=stone, 3=copper, 4=iron/gold, 5=diamond, 6=netherite. Modpacks can extend up to tier 10.",
               "tiers": {
                 "1": [
                   "minecraft:wooden_sword", "minecraft:wooden_pickaxe", "minecraft:wooden_axe", "minecraft:wooden_shovel", "minecraft:wooden_hoe",
@@ -161,27 +161,27 @@ public final class TierConfig {
                   "*:stone_sword", "*:stone_pickaxe", "*:stone_axe", "*:stone_shovel", "*:stone_hoe"
                 ],
                 "3": [
-                  "minecraft:iron_sword", "minecraft:iron_pickaxe", "minecraft:iron_axe", "minecraft:iron_shovel", "minecraft:iron_hoe",
-                  "*:iron_sword", "*:iron_pickaxe", "*:iron_axe", "*:iron_shovel", "*:iron_hoe",
-                  "*:golden_sword", "*:golden_pickaxe", "*:golden_axe", "*:golden_shovel", "*:golden_hoe",
-                  "*:gold_sword",   "*:gold_pickaxe",   "*:gold_axe",   "*:gold_shovel",   "*:gold_hoe",
-                  {"keyword": "copper", "tag": "c:tools/swords"},
-                  {"keyword": "copper", "tag": "c:tools/pickaxes"},
-                  {"keyword": "copper", "tag": "c:tools/axes"},
-                  {"keyword": "copper", "tag": "c:tools/shovels"},
-                  {"keyword": "copper", "tag": "c:tools/hoes"},
+                  "minecraft:copper_sword", "minecraft:copper_pickaxe", "minecraft:copper_axe", "minecraft:copper_shovel", "minecraft:copper_hoe",
+                  "*:copper_sword", "*:copper_pickaxe", "*:copper_axe", "*:copper_shovel", "*:copper_hoe",
                   {"keyword": "tin",    "tag": "c:tools/pickaxes"},
                   {"keyword": "bronze", "tag": "c:tools/pickaxes"},
                   {"keyword": "brass",  "tag": "c:tools/pickaxes"}
                 ],
                 "4": [
-                  "minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:diamond_shovel", "minecraft:diamond_hoe",
-                  "*:diamond_sword", "*:diamond_pickaxe", "*:diamond_axe", "*:diamond_shovel", "*:diamond_hoe",
+                  "minecraft:iron_sword", "minecraft:iron_pickaxe", "minecraft:iron_axe", "minecraft:iron_shovel", "minecraft:iron_hoe",
+                  "*:iron_sword", "*:iron_pickaxe", "*:iron_axe", "*:iron_shovel", "*:iron_hoe",
+                  "minecraft:golden_sword", "minecraft:golden_pickaxe", "minecraft:golden_axe", "minecraft:golden_shovel", "minecraft:golden_hoe",
+                  "*:golden_sword", "*:golden_pickaxe", "*:golden_axe", "*:golden_shovel", "*:golden_hoe",
+                  "*:gold_sword",   "*:gold_pickaxe",   "*:gold_axe",   "*:gold_shovel",   "*:gold_hoe",
                   {"keyword": "steel",  "tag": "c:tools/pickaxes"},
-                  {"keyword": "silver", "tag": "c:tools/pickaxes"},
-                  {"keyword": "mithril","tag": "c:tools/pickaxes"}
+                  {"keyword": "silver", "tag": "c:tools/pickaxes"}
                 ],
                 "5": [
+                  "minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:diamond_shovel", "minecraft:diamond_hoe",
+                  "*:diamond_sword", "*:diamond_pickaxe", "*:diamond_axe", "*:diamond_shovel", "*:diamond_hoe",
+                  {"keyword": "mithril", "tag": "c:tools/pickaxes"}
+                ],
+                "6": [
                   "minecraft:netherite_sword", "minecraft:netherite_pickaxe", "minecraft:netherite_axe", "minecraft:netherite_shovel", "minecraft:netherite_hoe",
                   "*:netherite_sword", "*:netherite_pickaxe", "*:netherite_axe", "*:netherite_shovel", "*:netherite_hoe",
                   {"keyword": "adamantine", "tag": "c:tools/pickaxes"},
@@ -193,15 +193,20 @@ public final class TierConfig {
 
     private static final String DEFAULT_BLOCK_CONFIG = """
             {
-              "_comment": "Block tier assignments. A block requires a tool at or above this tier. Blocks not listed fall back to vanilla's needs_*_tool tag inference.",
+              "_comment": "Block tier assignments. A block requires a tool at or above this tier. Defaults gate iron ore behind copper tools, otherwise mirror vanilla progression bumped one tier higher.",
               "tiers": {
                 "2": [
                   "#minecraft:needs_stone_tool"
                 ],
                 "3": [
-                  "#minecraft:needs_iron_tool"
+                  "minecraft:iron_ore",
+                  "minecraft:deepslate_iron_ore"
                 ],
                 "4": [
+                  "#minecraft:needs_iron_tool",
+                  "minecraft:nether_gold_ore"
+                ],
+                "5": [
                   "#minecraft:needs_diamond_tool"
                 ]
               }
