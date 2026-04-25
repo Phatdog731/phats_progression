@@ -1,7 +1,7 @@
 package com.phatdog.phatsprogression;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +29,7 @@ public final class TierResolver {
     public static Integer tierOfTool(ItemStack stack) {
         if (stack.isEmpty()) return null;
         Item item = stack.getItem();
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+        Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
         String itemIdStr = itemId.toString();
         String pathOnly  = itemId.getPath();
 
@@ -50,7 +50,7 @@ public final class TierResolver {
     @Nullable
     public static Integer tierOfBlock(BlockState state) {
         Block block = state.getBlock();
-        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
         String blockIdStr = blockId.toString();
         String pathOnly   = blockId.getPath();
 
@@ -103,7 +103,7 @@ public final class TierResolver {
     @Nullable
     private static TagKey<Item> safeItemTag(String tagId) {
         try {
-            return TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.parse(tagId));
+            return TagKey.create(BuiltInRegistries.ITEM.key(), Identifier.parse(tagId));
         } catch (Exception e) {
             return null;
         }
@@ -112,7 +112,7 @@ public final class TierResolver {
     @Nullable
     private static TagKey<Block> safeBlockTag(String tagId) {
         try {
-            return TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.parse(tagId));
+            return TagKey.create(BuiltInRegistries.BLOCK.key(), Identifier.parse(tagId));
         } catch (Exception e) {
             return null;
         }
