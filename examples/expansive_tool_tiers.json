@@ -1,0 +1,68 @@
+{
+  "_comment": "Expansive default tool/weapon tier assignments. Each material gets two entries: one for tools (covers pickaxes, axes, shovels, hoes, paxels, hammers, etc.) and one for weapons (covers swords, daggers, claymores, etc.). Drop into config/phats_progression/tool_tiers.json or merge with existing.",
+  "tiers": {
+    "1": [
+      "minecraft:wooden_sword", "minecraft:wooden_pickaxe", "minecraft:wooden_axe", "minecraft:wooden_shovel", "minecraft:wooden_hoe",
+      {"keyword": "wood", "tag": "c:tools"},
+      {"keyword": "wood", "tag": "c:weapons"},
+      {"keyword": "wooden", "tag": "c:tools"},
+      {"keyword": "wooden", "tag": "c:weapons"}
+    ],
+    "2": [
+      "minecraft:stone_sword", "minecraft:stone_pickaxe", "minecraft:stone_axe", "minecraft:stone_shovel", "minecraft:stone_hoe",
+      {"keyword": "stone", "tag": "c:tools"},
+      {"keyword": "stone", "tag": "c:weapons"}
+    ],
+    "3": [
+      "minecraft:copper_sword", "minecraft:copper_pickaxe", "minecraft:copper_axe", "minecraft:copper_shovel", "minecraft:copper_hoe",
+      {"keyword": "copper",   "tag": "c:tools"},   {"keyword": "copper",   "tag": "c:weapons"},
+      {"keyword": "tin",      "tag": "c:tools"},   {"keyword": "tin",      "tag": "c:weapons"},
+      {"keyword": "zinc",     "tag": "c:tools"},   {"keyword": "zinc",     "tag": "c:weapons"},
+      {"keyword": "lead",     "tag": "c:tools"},   {"keyword": "lead",     "tag": "c:weapons"},
+      {"keyword": "silver",   "tag": "c:tools"},   {"keyword": "silver",   "tag": "c:weapons"},
+      {"keyword": "aluminum", "tag": "c:tools"},   {"keyword": "aluminum", "tag": "c:weapons"},
+      {"keyword": "nickel",   "tag": "c:tools"},   {"keyword": "nickel",   "tag": "c:weapons"},
+      {"keyword": "bismuth",  "tag": "c:tools"},   {"keyword": "bismuth",  "tag": "c:weapons"}
+    ],
+    "4": [
+      "minecraft:iron_sword", "minecraft:iron_pickaxe", "minecraft:iron_axe", "minecraft:iron_shovel", "minecraft:iron_hoe",
+      "minecraft:golden_sword", "minecraft:golden_pickaxe", "minecraft:golden_axe", "minecraft:golden_shovel", "minecraft:golden_hoe",
+      {"keyword": "iron",       "tag": "c:tools"},   {"keyword": "iron",       "tag": "c:weapons"},
+      {"keyword": "gold",       "tag": "c:tools"},   {"keyword": "gold",       "tag": "c:weapons"},
+      {"keyword": "golden",     "tag": "c:tools"},   {"keyword": "golden",     "tag": "c:weapons"},
+      {"keyword": "bronze",     "tag": "c:tools"},   {"keyword": "bronze",     "tag": "c:weapons"},
+      {"keyword": "brass",      "tag": "c:tools"},   {"keyword": "brass",      "tag": "c:weapons"},
+      {"keyword": "electrum",   "tag": "c:tools"},   {"keyword": "electrum",   "tag": "c:weapons"},
+      {"keyword": "invar",      "tag": "c:tools"},   {"keyword": "invar",      "tag": "c:weapons"},
+      {"keyword": "constantan", "tag": "c:tools"},   {"keyword": "constantan", "tag": "c:weapons"},
+      {"keyword": "steel",      "tag": "c:tools"},   {"keyword": "steel",      "tag": "c:weapons"},
+      {"keyword": "cobalt",     "tag": "c:tools"},   {"keyword": "cobalt",     "tag": "c:weapons"},
+      {"keyword": "platinum",   "tag": "c:tools"},   {"keyword": "platinum",   "tag": "c:weapons"},
+      {"keyword": "tungsten",   "tag": "c:tools"},   {"keyword": "tungsten",   "tag": "c:weapons"},
+      {"keyword": "osmium",     "tag": "c:tools"},   {"keyword": "osmium",     "tag": "c:weapons"},
+      {"keyword": "uranium",    "tag": "c:tools"},   {"keyword": "uranium",    "tag": "c:weapons"}
+    ],
+    "5": [
+      "minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:diamond_shovel", "minecraft:diamond_hoe",
+      {"keyword": "diamond",    "tag": "c:tools"},   {"keyword": "diamond",    "tag": "c:weapons"},
+      {"keyword": "emerald",    "tag": "c:tools"},   {"keyword": "emerald",    "tag": "c:weapons"},
+      {"keyword": "ruby",       "tag": "c:tools"},   {"keyword": "ruby",       "tag": "c:weapons"},
+      {"keyword": "sapphire",   "tag": "c:tools"},   {"keyword": "sapphire",   "tag": "c:weapons"},
+      {"keyword": "peridot",    "tag": "c:tools"},   {"keyword": "peridot",    "tag": "c:weapons"},
+      {"keyword": "topaz",      "tag": "c:tools"},   {"keyword": "topaz",      "tag": "c:weapons"},
+      {"keyword": "amber",      "tag": "c:tools"},   {"keyword": "amber",      "tag": "c:weapons"},
+      {"keyword": "iridium",    "tag": "c:tools"},   {"keyword": "iridium",    "tag": "c:weapons"},
+      {"keyword": "mithril",    "tag": "c:tools"},   {"keyword": "mithril",    "tag": "c:weapons"},
+      {"keyword": "signalum",   "tag": "c:tools"},   {"keyword": "signalum",   "tag": "c:weapons"},
+      {"keyword": "lumium",     "tag": "c:tools"},   {"keyword": "lumium",     "tag": "c:weapons"},
+      {"keyword": "elementium", "tag": "c:tools"},   {"keyword": "elementium", "tag": "c:weapons"}
+    ],
+    "6": [
+      "minecraft:netherite_sword", "minecraft:netherite_pickaxe", "minecraft:netherite_axe", "minecraft:netherite_shovel", "minecraft:netherite_hoe",
+      {"keyword": "netherite",  "tag": "c:tools"},   {"keyword": "netherite",  "tag": "c:weapons"},
+      {"keyword": "aeternium",  "tag": "c:tools"},   {"keyword": "aeternium",  "tag": "c:weapons"},
+      {"keyword": "enderium",   "tag": "c:tools"},   {"keyword": "enderium",   "tag": "c:weapons"},
+      {"keyword": "adamantine", "tag": "c:tools"},   {"keyword": "adamantine", "tag": "c:weapons"}
+    ]
+  }
+}
