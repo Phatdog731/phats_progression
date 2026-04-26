@@ -1,0 +1,46 @@
+{
+  "_comment": "Expansive default block tier assignments for common mod-added ores. Drop into config/phats_progression/block_tiers.json or merge with existing. Tiers: 1=wood, 2=stone, 3=copper, 4=iron, 5=diamond, 6=netherite. Highest matching tier wins.",
+  "tiers": {
+    "2": [
+      "#minecraft:needs_stone_tool"
+    ],
+    "3": [
+      "minecraft:iron_ore",
+      "minecraft:deepslate_iron_ore",
+      "*:tin_ore",      "*:deepslate_tin_ore",      "#c:ores/tin",
+      "*:zinc_ore",     "*:deepslate_zinc_ore",     "#c:ores/zinc",
+      "*:lead_ore",     "*:deepslate_lead_ore",     "#c:ores/lead",
+      "*:silver_ore",   "*:deepslate_silver_ore",   "#c:ores/silver",
+      "*:aluminum_ore", "*:deepslate_aluminum_ore", "#c:ores/aluminum",
+      "*:bauxite_ore",  "*:deepslate_bauxite_ore",
+      "*:nickel_ore",   "*:deepslate_nickel_ore",   "#c:ores/nickel",
+      "*:bismuth_ore",  "*:deepslate_bismuth_ore"
+    ],
+    "4": [
+      "#minecraft:needs_iron_tool",
+      "minecraft:nether_gold_ore",
+      "*:cobalt_ore",            "*:deepslate_cobalt_ore",            "#c:ores/cobalt",
+      "*:platinum_ore",          "*:deepslate_platinum_ore",          "#c:ores/platinum",
+      "*:tungsten_ore",          "*:deepslate_tungsten_ore",          "#c:ores/tungsten",
+      "*:osmium_ore",            "*:deepslate_osmium_ore",            "#c:ores/osmium",
+      "*:uranium_ore",           "*:deepslate_uranium_ore",           "#c:ores/uranium",
+      "*:apatite_ore",           "*:deepslate_apatite_ore",
+      "*:cinnabar_ore",          "*:deepslate_cinnabar_ore",
+      "*:sulfur_ore",            "*:deepslate_sulfur_ore",
+      "*:bitumen_ore",           "*:deepslate_bitumen_ore",
+      "*:potassium_nitrate_ore", "*:deepslate_potassium_nitrate_ore",
+      "*:graphite_ore",          "*:deepslate_graphite_ore",
+      "*:fluorite_ore",          "*:deepslate_fluorite_ore"
+    ],
+    "5": [
+      "#minecraft:needs_diamond_tool",
+      "*:iridium_ore",  "*:deepslate_iridium_ore",  "#c:ores/iridium",
+      "*:ruby_ore",     "*:deepslate_ruby_ore",     "#c:ores/ruby",
+      "*:sapphire_ore", "*:deepslate_sapphire_ore", "#c:ores/sapphire",
+      "*:peridot_ore",  "*:deepslate_peridot_ore",  "#c:ores/peridot",
+      "*:topaz_ore",    "*:deepslate_topaz_ore",
+      "*:amber_ore",    "*:deepslate_amber_ore",
+      "*:mithril_ore",  "*:deepslate_mithril_ore",  "#c:ores/mithril"
+    ]
+  }
+}
