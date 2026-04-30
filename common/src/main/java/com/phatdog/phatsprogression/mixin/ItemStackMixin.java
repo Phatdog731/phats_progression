@@ -9,20 +9,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Intercepts vanilla "can this tool mine this block" checks.
+ * Intercepts vanilla "can this tool mine this block" checks and mining speed.
  * <p>
  * Behavior:
  * - If the block has a configured tier AND the tool has a configured tier:
- *   compare directly.
- * - If only the block has a configured tier: require tool tier >= block tier.
- *   An unconfigured tool is treated as tier -1 (cannot mine anything configured).
- *   NOTE: this is strict and may need refinement. In v0.2 we'll add vanilla-tool-tier
- *   inference so unconfigured iron pickaxes still count as tier 3.
- * - If neither has a configured tier: defer to vanilla.
+ *   - Tool tier >= block tier: return true / vanilla speed (drops + speed normal)
+ *   - Tool tier < block tier: return false / bare-hands speed (no drops + slow mining)
+ * - If neither configured (or only one): defer to vanilla behavior.
  */
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 
+    /**
+     * Override drop validity when our tier system disagrees with vanilla.
+     */
     @Inject(method = "isCorrectToolForDrops", at = @At("HEAD"), cancellable = true)
     private void phats_progression$checkTier(BlockState state,
                                              CallbackInfoReturnable<Boolean> cir) {
@@ -35,5 +35,27 @@ public abstract class ItemStackMixin {
         if (toolTier == null) return;
 
         cir.setReturnValue(toolTier >= blockTier);
+    }
+
+    /**
+     * Slow mining speed to bare-hands speed when tool tier is below block tier.
+     * This prevents the "block breaks but no drops" surprise — it now feels like
+     * trying to mine with the wrong tool, with appropriate slowdown.
+     */
+    @Inject(method = "getDestroySpeed", at = @At("HEAD"), cancellable = true)
+    private void phats_progression$slowOutOfTier(BlockState state,
+                                                 CallbackInfoReturnable<Float> cir) {
+        ItemStack self = (ItemStack) (Object) this;
+
+        Integer blockTier = TierResolver.tierOfBlock(state);
+        if (blockTier == null) return;
+
+        Integer toolTier = TierResolver.tierOfTool(self);
+        if (toolTier == null) return;
+
+        if (toolTier < blockTier) {
+            // Force bare-hands speed (1.0) regardless of what the tool would normally give.
+            cir.setReturnValue(1.0f);
+        }
     }
 }
