@@ -15,11 +15,14 @@ import java.util.Map;
 /**
  * Resolves the tier of items and blocks based on config assignments.
  * <p>
- * Matching rules per entry: all specified fields must match (AND). If an
- * entry is a plain ID or glob pattern, only the ID is checked. If it's a
- * tag, only the tag. Objects can combine id/tag/keyword for precise targeting.
+ * On 1.21.11+, vanilla removed the Tier/Tiers system in favor of data components.
+ * As a result, this branch does NOT have the vanilla tool tier fallback that
+ * the main (1.21.1) branch has. Tools without an explicit config entry will
+ * return null and our mixin will defer to vanilla behavior.
  * <p>
- * When multiple entries match, the highest tier wins.
+ * Modpack developers should ensure their custom tools are listed in the
+ * tool_tiers.json config or are tagged with c:tools/* and matched via
+ * keyword+tag entries.
  */
 public final class TierResolver {
 
