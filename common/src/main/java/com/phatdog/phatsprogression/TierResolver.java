@@ -5,10 +5,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +24,25 @@ import java.util.Map;
  * tag, only the tag. Objects can combine id/tag/keyword for precise targeting.
  * <p>
  * When multiple entries match, the highest tier wins.
+ * <p>
+ * If a tool has no config match, falls back to inferring tier from the tool's
+ * vanilla ToolMaterial (Tiers enum). This means modded tools that use vanilla
+ * tier values (very common) automatically get a sensible tier even without
+ * explicit config entries.
  */
 public final class TierResolver {
+
+    /** Maps vanilla {@link Tiers} values to our integer tier system (1.21.1 progression). */
+    private static final Map<Tier, Integer> VANILLA_TIER_MAP = new HashMap<>();
+
+    static {
+        VANILLA_TIER_MAP.put(Tiers.WOOD,      1);
+        VANILLA_TIER_MAP.put(Tiers.STONE,     2);
+        VANILLA_TIER_MAP.put(Tiers.IRON,      3);
+        VANILLA_TIER_MAP.put(Tiers.GOLD,      3);
+        VANILLA_TIER_MAP.put(Tiers.DIAMOND,   4);
+        VANILLA_TIER_MAP.put(Tiers.NETHERITE, 5);
+    }
 
     private TierResolver() {}
 
@@ -33,6 +54,7 @@ public final class TierResolver {
         String itemIdStr = itemId.toString();
         String pathOnly  = itemId.getPath();
 
+        // Check config first
         Integer best = null;
         for (Map.Entry<Integer, List<TierEntry>> tierBucket : TierConfig.toolEntries().entrySet()) {
             int tier = tierBucket.getKey();
@@ -44,7 +66,21 @@ public final class TierResolver {
                 }
             }
         }
-        return best;
+        if (best != null) return best;
+
+        // Fallback: infer from vanilla ToolMaterial
+        return inferVanillaToolTier(item);
+    }
+
+    /**
+     * Falls back to inferring tier from the tool's vanilla {@link Tier} (ToolMaterial).
+     * Returns null if the item is not a TieredItem or its tier isn't in our map.
+     */
+    @Nullable
+    private static Integer inferVanillaToolTier(Item item) {
+        if (!(item instanceof TieredItem tieredItem)) return null;
+        Tier tier = tieredItem.getTier();
+        return VANILLA_TIER_MAP.get(tier);
     }
 
     @Nullable
