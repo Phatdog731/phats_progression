@@ -1,6 +1,8 @@
 package com.phatdog.phatsprogression;
 
 import com.mojang.logging.LogUtils;
+import com.phatdog.phatsprogression.command.ProgressionCommand;
+import dev.architectury.event.events.common.CommandRegistrationEvent;
 import org.slf4j.Logger;
 
 public final class PhatsProgression {
@@ -13,5 +15,7 @@ public final class PhatsProgression {
     public static void init() {
         LOGGER.info("Initializing Phat's Progression Framework");
         TierConfig.load();
+        CommandRegistrationEvent.EVENT.register((dispatcher, registry, selection) ->
+                ProgressionCommand.register(dispatcher));
     }
 }
