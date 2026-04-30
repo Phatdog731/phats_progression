@@ -15,6 +15,7 @@ public final class PhatsProgression {
     public static void init() {
         LOGGER.info("Initializing Phat's Progression Framework");
         TierConfig.load();
+        TierDataLoader.registerAll();
         CommandRegistrationEvent.EVENT.register((dispatcher, registry, selection) ->
                 ProgressionCommand.register(dispatcher));
     }
