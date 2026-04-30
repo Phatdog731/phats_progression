@@ -1,7 +1,5 @@
 package com.phatdog.phatsprogression;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,9 +18,10 @@ import java.util.TreeMap;
 /**
  * Loads block_tiers.json and tool_tiers.json from the config folder.
  * <p>
- * Schema (both files):
+ * Schema:
  * <pre>
  * {
+ *   "ignore_datapacks": false,
  *   "tiers": {
  *     "6": [
  *       "exactmod:item_id",
@@ -33,27 +32,81 @@ import java.util.TreeMap;
  *   }
  * }
  * </pre>
+ * <p>
+ * The {@code ignore_datapacks} field, when true, makes that config file's
+ * loaded entries replace any datapack-contributed entries (instead of merging).
+ * Defaults to false (merge mode).
  */
 public final class TierConfig {
 
-    /** Tier -> entries (tool). */
+    /** Tier -> entries (tool), merged from config files + datapacks. */
     private static final Map<Integer, List<TierEntry>> TOOL_ENTRIES = new TreeMap<>();
-    /** Tier -> entries (block). */
+    /** Tier -> entries (block), merged from config files + datapacks. */
     private static final Map<Integer, List<TierEntry>> BLOCK_ENTRIES = new TreeMap<>();
+
+    /** Tier -> entries (tool), from datapack only. Set by TierDataLoader. */
+    private static final Map<Integer, List<TierEntry>> DATAPACK_TOOL_ENTRIES = new TreeMap<>();
+    /** Tier -> entries (block), from datapack only. Set by TierDataLoader. */
+    private static final Map<Integer, List<TierEntry>> DATAPACK_BLOCK_ENTRIES = new TreeMap<>();
+
+    /** Tier -> entries (tool), from config file only. */
+    private static final Map<Integer, List<TierEntry>> CONFIG_TOOL_ENTRIES = new TreeMap<>();
+    /** Tier -> entries (block), from config file only. */
+    private static final Map<Integer, List<TierEntry>> CONFIG_BLOCK_ENTRIES = new TreeMap<>();
+
+    private static boolean toolConfigIgnoresDatapacks = false;
+    private static boolean blockConfigIgnoresDatapacks = false;
 
     private TierConfig() {}
 
+    /** Load configs from disk. Called on mod init and on /reload. */
     public static void load() {
-        TOOL_ENTRIES.clear();
-        BLOCK_ENTRIES.clear();
-        loadOrCreate(ConfigPaths.blockTiers(), BLOCK_ENTRIES, "block", DEFAULT_BLOCK_CONFIG);
-        loadOrCreate(ConfigPaths.toolTiers(),  TOOL_ENTRIES,  "tool",  DEFAULT_TOOL_CONFIG);
+        loadConfigFile(ConfigPaths.blockTiers(), CONFIG_BLOCK_ENTRIES, "block", DEFAULT_BLOCK_CONFIG, true);
+        loadConfigFile(ConfigPaths.toolTiers(),  CONFIG_TOOL_ENTRIES,  "tool",  DEFAULT_TOOL_CONFIG,  false);
+        rebuildMerged();
     }
 
-    private static void loadOrCreate(Path path,
-                                     Map<Integer, List<TierEntry>> target,
-                                     String label,
-                                     String defaultContent) {
+    /**
+     * Set the datapack-loaded entries. Called by TierDataLoader after datapacks load.
+     */
+    public static void setDatapackEntries(Map<Integer, List<TierEntry>> blocks,
+                                          Map<Integer, List<TierEntry>> tools) {
+        DATAPACK_BLOCK_ENTRIES.clear();
+        DATAPACK_BLOCK_ENTRIES.putAll(blocks);
+        DATAPACK_TOOL_ENTRIES.clear();
+        DATAPACK_TOOL_ENTRIES.putAll(tools);
+        rebuildMerged();
+    }
+
+    /** Combine datapack and config sources into the merged maps the rest of the mod uses. */
+    private static void rebuildMerged() {
+        BLOCK_ENTRIES.clear();
+        if (!blockConfigIgnoresDatapacks) {
+            mergeIn(BLOCK_ENTRIES, DATAPACK_BLOCK_ENTRIES);
+        }
+        mergeIn(BLOCK_ENTRIES, CONFIG_BLOCK_ENTRIES);
+
+        TOOL_ENTRIES.clear();
+        if (!toolConfigIgnoresDatapacks) {
+            mergeIn(TOOL_ENTRIES, DATAPACK_TOOL_ENTRIES);
+        }
+        mergeIn(TOOL_ENTRIES, CONFIG_TOOL_ENTRIES);
+    }
+
+    private static void mergeIn(Map<Integer, List<TierEntry>> target,
+                                Map<Integer, List<TierEntry>> source) {
+        for (Map.Entry<Integer, List<TierEntry>> e : source.entrySet()) {
+            target.computeIfAbsent(e.getKey(), k -> new ArrayList<>()).addAll(e.getValue());
+        }
+    }
+
+    private static void loadConfigFile(Path path,
+                                       Map<Integer, List<TierEntry>> target,
+                                       String label,
+                                       String defaultContent,
+                                       boolean isBlockConfig) {
+        target.clear();
+
         if (!Files.exists(path)) {
             PhatsProgression.LOGGER.info("No {}_tiers.json found, generating defaults at {}",
                     label, path);
@@ -66,67 +119,21 @@ public final class TierConfig {
                 PhatsProgression.LOGGER.error("{}_tiers.json is not a JSON object", label);
                 return;
             }
-            parseConfig(root.getAsJsonObject(), target, label);
-            PhatsProgression.LOGGER.info("Loaded {} tier assignments from {}", label, path);
+            JsonObject obj = root.getAsJsonObject();
+            boolean ignoreDatapacks = obj.has("ignore_datapacks")
+                    && obj.get("ignore_datapacks").isJsonPrimitive()
+                    && obj.get("ignore_datapacks").getAsBoolean();
+            if (isBlockConfig) {
+                blockConfigIgnoresDatapacks = ignoreDatapacks;
+            } else {
+                toolConfigIgnoresDatapacks = ignoreDatapacks;
+            }
+            ConfigParser.parseInto(obj, target, label);
+            PhatsProgression.LOGGER.info("Loaded {} tier assignments from {} (ignore_datapacks={})",
+                    label, path, ignoreDatapacks);
         } catch (IOException e) {
             PhatsProgression.LOGGER.error("Failed to read {}_tiers.json: {}", label, e.getMessage());
         }
-    }
-
-    private static void parseConfig(JsonObject root,
-                                    Map<Integer, List<TierEntry>> target,
-                                    String label) {
-        if (!root.has("tiers") || !root.get("tiers").isJsonObject()) return;
-        JsonObject tiers = root.getAsJsonObject("tiers");
-
-        for (Map.Entry<String, JsonElement> bucket : tiers.entrySet()) {
-            String tierKey = bucket.getKey();
-            if (tierKey.startsWith("_")) continue;
-
-            int tier;
-            try {
-                tier = Integer.parseInt(tierKey);
-            } catch (NumberFormatException e) {
-                PhatsProgression.LOGGER.warn("{}_tiers.json: invalid tier key '{}', skipping",
-                        label, tierKey);
-                continue;
-            }
-            if (!Tier.isValid(tier)) {
-                PhatsProgression.LOGGER.warn("{}_tiers.json: tier {} out of range 0-{}, skipping",
-                        label, tier, Tier.MAX);
-                continue;
-            }
-
-            if (!bucket.getValue().isJsonArray()) continue;
-            List<TierEntry> entries = target.computeIfAbsent(tier, k -> new ArrayList<>());
-            for (JsonElement el : bucket.getValue().getAsJsonArray()) {
-                TierEntry entry = parseEntry(el, label);
-                if (entry != null && entry.isValid()) entries.add(entry);
-            }
-        }
-    }
-
-    private static TierEntry parseEntry(JsonElement el, String label) {
-        if (el.isJsonPrimitive() && el.getAsJsonPrimitive().isString()) {
-            String s = el.getAsString();
-            if (s.startsWith("#")) {
-                return new TierEntry(null, s.substring(1), null);
-            }
-            return new TierEntry(s, null, null);
-        }
-        if (el.isJsonObject()) {
-            JsonObject obj = el.getAsJsonObject();
-            String id = obj.has("id") && obj.get("id").isJsonPrimitive()
-                    ? obj.get("id").getAsString() : null;
-            String tag = obj.has("tag") && obj.get("tag").isJsonPrimitive()
-                    ? obj.get("tag").getAsString() : null;
-            String keyword = obj.has("keyword") && obj.get("keyword").isJsonPrimitive()
-                    ? obj.get("keyword").getAsString() : null;
-            if (tag != null && tag.startsWith("#")) tag = tag.substring(1);
-            return new TierEntry(id, tag, keyword);
-        }
-        PhatsProgression.LOGGER.warn("{}_tiers.json: ignoring invalid entry: {}", label, el);
-        return null;
     }
 
     private static void writeDefault(Path path, String content) {
@@ -149,7 +156,8 @@ public final class TierConfig {
 
     private static final String DEFAULT_TOOL_CONFIG = """
             {
-              "_comment": "Tool tier assignments. Tools can mine blocks at or below their tier. Matches merged: ID/glob, tag, keyword (substring of ID path) — if all specified fields match, the tool is assigned to that tier. Highest matching tier wins.",
+              "_comment": "Tool tier assignments. Tools can mine blocks at or below their tier. ignore_datapacks=true makes this config skip merging with datapack-shipped tier definitions.",
+              "ignore_datapacks": false,
               "tiers": {
                 "1": [
                   "minecraft:wooden_sword", "minecraft:wooden_pickaxe", "minecraft:wooden_axe", "minecraft:wooden_shovel", "minecraft:wooden_hoe",
@@ -169,23 +177,15 @@ public final class TierConfig {
                   {"keyword": "copper", "tag": "c:tools/pickaxes"},
                   {"keyword": "copper", "tag": "c:tools/axes"},
                   {"keyword": "copper", "tag": "c:tools/shovels"},
-                  {"keyword": "copper", "tag": "c:tools/hoes"},
-                  {"keyword": "tin",    "tag": "c:tools/pickaxes"},
-                  {"keyword": "bronze", "tag": "c:tools/pickaxes"},
-                  {"keyword": "brass",  "tag": "c:tools/pickaxes"}
+                  {"keyword": "copper", "tag": "c:tools/hoes"}
                 ],
                 "4": [
                   "minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:diamond_shovel", "minecraft:diamond_hoe",
-                  "*:diamond_sword", "*:diamond_pickaxe", "*:diamond_axe", "*:diamond_shovel", "*:diamond_hoe",
-                  {"keyword": "steel",  "tag": "c:tools/pickaxes"},
-                  {"keyword": "silver", "tag": "c:tools/pickaxes"},
-                  {"keyword": "mithril","tag": "c:tools/pickaxes"}
+                  "*:diamond_sword", "*:diamond_pickaxe", "*:diamond_axe", "*:diamond_shovel", "*:diamond_hoe"
                 ],
                 "5": [
                   "minecraft:netherite_sword", "minecraft:netherite_pickaxe", "minecraft:netherite_axe", "minecraft:netherite_shovel", "minecraft:netherite_hoe",
-                  "*:netherite_sword", "*:netherite_pickaxe", "*:netherite_axe", "*:netherite_shovel", "*:netherite_hoe",
-                  {"keyword": "adamantine", "tag": "c:tools/pickaxes"},
-                  {"keyword": "black_steel","tag": "c:tools/pickaxes"}
+                  "*:netherite_sword", "*:netherite_pickaxe", "*:netherite_axe", "*:netherite_shovel", "*:netherite_hoe"
                 ]
               }
             }
@@ -193,7 +193,8 @@ public final class TierConfig {
 
     private static final String DEFAULT_BLOCK_CONFIG = """
             {
-              "_comment": "Block tier assignments. A block requires a tool at or above this tier. Blocks not listed fall back to vanilla's needs_*_tool tag inference.",
+              "_comment": "Block tier assignments. A block requires a tool at or above this tier. ignore_datapacks=true makes this config skip merging with datapack-shipped tier definitions.",
+              "ignore_datapacks": false,
               "tiers": {
                 "2": [
                   "#minecraft:needs_stone_tool"
