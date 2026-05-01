@@ -20,9 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 
-    /**
-     * Override drop validity when our tier system disagrees with vanilla.
-     */
     @Inject(method = "isCorrectToolForDrops", at = @At("HEAD"), cancellable = true)
     private void phats_progression$checkTier(BlockState state,
                                              CallbackInfoReturnable<Boolean> cir) {
@@ -34,14 +31,12 @@ public abstract class ItemStackMixin {
         Integer toolTier = TierResolver.tierOfTool(self);
         if (toolTier == null) return;
 
-        cir.setReturnValue(toolTier >= blockTier);
+        if (toolTier < blockTier) {
+            cir.setReturnValue(false);
+        }
+        // else: tier check passed; let vanilla decide if tool TYPE is correct
     }
 
-    /**
-     * Slow mining speed to bare-hands speed when tool tier is below block tier.
-     * This prevents the "block breaks but no drops" surprise — it now feels like
-     * trying to mine with the wrong tool, with appropriate slowdown.
-     */
     @Inject(method = "getDestroySpeed", at = @At("HEAD"), cancellable = true)
     private void phats_progression$slowOutOfTier(BlockState state,
                                                  CallbackInfoReturnable<Float> cir) {
@@ -54,7 +49,6 @@ public abstract class ItemStackMixin {
         if (toolTier == null) return;
 
         if (toolTier < blockTier) {
-            // Force bare-hands speed (1.0) regardless of what the tool would normally give.
             cir.setReturnValue(1.0f);
         }
     }
