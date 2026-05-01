@@ -169,21 +169,21 @@ public final class TierConfig {
                   "*:stone_sword", "*:stone_pickaxe", "*:stone_axe", "*:stone_shovel", "*:stone_hoe"
                 ],
                 "3": [
-                  "minecraft:iron_sword", "minecraft:iron_pickaxe", "minecraft:iron_axe", "minecraft:iron_shovel", "minecraft:iron_hoe",
-                  "*:iron_sword", "*:iron_pickaxe", "*:iron_axe", "*:iron_shovel", "*:iron_hoe",
-                  "*:golden_sword", "*:golden_pickaxe", "*:golden_axe", "*:golden_shovel", "*:golden_hoe",
-                  "*:gold_sword",   "*:gold_pickaxe",   "*:gold_axe",   "*:gold_shovel",   "*:gold_hoe",
-                  {"keyword": "copper", "tag": "c:tools/swords"},
-                  {"keyword": "copper", "tag": "c:tools/pickaxes"},
-                  {"keyword": "copper", "tag": "c:tools/axes"},
-                  {"keyword": "copper", "tag": "c:tools/shovels"},
-                  {"keyword": "copper", "tag": "c:tools/hoes"}
+                  "minecraft:copper_sword", "minecraft:copper_pickaxe", "minecraft:copper_axe", "minecraft:copper_shovel", "minecraft:copper_hoe",
+                  "*:copper_sword", "*:copper_pickaxe", "*:copper_axe", "*:copper_shovel", "*:copper_hoe",
                 ],
                 "4": [
-                  "minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:diamond_shovel", "minecraft:diamond_hoe",
-                  "*:diamond_sword", "*:diamond_pickaxe", "*:diamond_axe", "*:diamond_shovel", "*:diamond_hoe"
+                  "minecraft:iron_sword", "minecraft:iron_pickaxe", "minecraft:iron_axe", "minecraft:iron_shovel", "minecraft:iron_hoe",
+                  "*:iron_sword", "*:iron_pickaxe", "*:iron_axe", "*:iron_shovel", "*:iron_hoe",
+                  "minecraft:golden_sword", "minecraft:golden_pickaxe", "minecraft:golden_axe", "minecraft:golden_shovel", "minecraft:golden_hoe",
+                  "*:golden_sword", "*:golden_pickaxe", "*:golden_axe", "*:golden_shovel", "*:golden_hoe",
+                  "*:gold_sword",   "*:gold_pickaxe",   "*:gold_axe",   "*:gold_shovel",   "*:gold_hoe",
                 ],
                 "5": [
+                  "minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:diamond_shovel", "minecraft:diamond_hoe",
+                  "*:diamond_sword", "*:diamond_pickaxe", "*:diamond_axe", "*:diamond_shovel", "*:diamond_hoe",
+                ],
+                "6": [
                   "minecraft:netherite_sword", "minecraft:netherite_pickaxe", "minecraft:netherite_axe", "minecraft:netherite_shovel", "minecraft:netherite_hoe",
                   "*:netherite_sword", "*:netherite_pickaxe", "*:netherite_axe", "*:netherite_shovel", "*:netherite_hoe"
                 ]
@@ -200,9 +200,14 @@ public final class TierConfig {
                   "#minecraft:needs_stone_tool"
                 ],
                 "3": [
-                  "#minecraft:needs_iron_tool"
+                  "minecraft:iron_ore",
+                  "minecraft:deepslate_iron_ore"
                 ],
                 "4": [
+                  "#minecraft:needs_iron_tool",
+                  "minecraft:nether_gold_ore"
+                ],
+                "5": [
                   "#minecraft:needs_diamond_tool"
                 ]
               }
